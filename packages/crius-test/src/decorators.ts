@@ -16,7 +16,42 @@ function autorun(_test: Function) {
         ? target.handleParams(target.examples)
         : target.examples;
     for (const example of testParams) {
-      const title = compileString(target.title || "", example);
+      let title = compileString(target.title || "", example);
+      // if(target.meta !== null) {
+      //   title = JSON.stringify({title, ...target.meta, level:target.level});
+      // }
+      let tags: any[] = [];
+      target.salesforce !== null ? tags.push(target.salesforce): tags.push();
+      target.google !== null ? tags.push(target.google): tags.push();
+
+      let brands: any[] = [];
+      target.rc !== null ? brands.push(target.rc): brands.push();
+      target.bt !== null ? brands.push(target.bt): brands.push();
+      let metadata: object;
+      if(tags.length > 0) {
+        metadata = {tags}
+      }
+      if(brands.length > 0) {
+        metadata = {...metadata, brands}
+      }
+      if(target.meta !== null) {
+        metadata = {...metadata, ...target.meta}
+        // title = JSON.stringify({title, ...target.meta, level:target.level});
+      }
+      if(target.level !== null) {
+        metadata = {...metadata, level:target.level}
+      }
+      if( metadata !== null) {
+        title = JSON.stringify({title, ...metadata})
+      }
+
+      // if(target.salesforce !== null) {
+      //   tags.push(target.salesforce);
+      // }
+      // if(target.google !== null) {
+      //   tags.push(target.google);
+      // }
+      console.log("title--", title);
       const baseContext: BaseContext = {
         title,
         example,
@@ -63,7 +98,7 @@ function autorun(_test: Function) {
   };
 }
 
-function title(title: string) {
+function title(title: string ) {
   if (typeof title === "undefined" || title === null) {
     throw new Error("Test case title is required.");
   }
@@ -71,6 +106,48 @@ function title(title: string) {
     (target as typeof Step).title = title;
   };
 }
+
+function meta(params: object) {
+  return function(target: Object){
+    (target as typeof Step).meta = params;
+  }
+}
+
+function p0(target: object){
+  (target as typeof Step).level=["p0"];
+}
+
+function p1(target: object){
+  (target as typeof Step).level=["p1"];
+}
+
+function salesforce(params?: object){
+  return function(target: object){
+    const tag:any[] = typeof params === 'object'? ["salesforce", params]:["salesforce"];
+    (target as typeof Step).salesforce = tag;
+  }
+}
+
+function google(){
+  return function(target: object){
+    (target as typeof Step).google = ["google"];
+  }
+}
+
+function rc(params?: object){
+  return function(target: object){
+    const tag:any[] = typeof params === 'object'? ["rc", params]:["rc"];
+    (target as typeof Step).rc = tag;
+  }
+}
+
+function bt(params?: object){
+  return function(target: object){
+    const tag:any[] = typeof params === 'object'? ["bt", params]:["bt"];
+    (target as typeof Step).bt = tag;
+  }
+}
+
 
 function examples(params: TemplateStringsArray | object[] | string | string[]) {
   return function(
@@ -145,4 +222,4 @@ function params(handleParams: (testParams: any[]) => any[]) {
   };
 }
 
-export { autorun, title, examples, beforeEach, afterEach, plugins, params };
+export { autorun, title, examples, beforeEach, afterEach, plugins, params, meta, p0, p1, salesforce, google, rc, bt };

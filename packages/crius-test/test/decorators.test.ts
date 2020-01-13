@@ -5,7 +5,12 @@ import {
   beforeEach,
   afterEach,
   plugins,
-  params
+  params,
+  meta,
+  p0,
+  p1,
+  salesforce,
+  google,
 } from '../src/decorators';
 import { Step } from '../src/step';
 import { resolve } from 'dns';
@@ -24,6 +29,58 @@ test('test @autorun', async () => {
     expect(testFn.mock.calls.length).toBe(1);
   })
 });
+
+test('test @meta', ()=>{
+  @meta({a:1,b:2})
+  class Bar extends Step {}
+  expect(Bar.meta).toEqual({a:1,b:2});
+})
+
+test('test @p0', ()=>{
+  @p0
+  class Bar extends Step {}
+  expect(Bar.level).toEqual(["p0"]);
+})
+
+test('test @p1', ()=>{
+  @p1
+  class Bar extends Step {}
+  expect(Bar.level).toEqual(["p1"]);
+});
+
+test('test @p0 @p1', ()=>{
+  
+  @p0 @p1
+  class Bar extends Step {}
+  expect(Bar.level).toEqual(["p0"]);
+}) 
+
+test('1.test @salesforce', ()=>{
+  
+  @salesforce()
+  class Bar extends Step {}
+  expect(Bar.salesforce).toEqual(["salesforce"]);
+}) 
+
+test('2.test @salesforce', ()=>{
+  @salesforce({modes: ['classic']})
+  class Bar extends Step {}
+  expect(Bar.salesforce).toEqual(["salesforce",{modes: ['classic']}]);
+}) 
+
+test('test @google', ()=>{
+  @google()
+  class Bar extends Step {}
+  expect(Bar.google).toEqual(["google"]);
+})
+
+test('test @tags @title', ()=>{
+  @meta({a:1,b:2})
+  @title("test title")
+  class Bar extends Step {}
+  expect(Bar.meta).toEqual({a:1,b:2});
+  expect(Bar.title).toEqual("test title")
+})
 
 test('test @title', () => {
   @title('bar title')
@@ -172,7 +229,6 @@ test('test @params', () => {
   const callback = (paramsList: any[]) => paramsList;
   @params(callback)
   class Bar extends Step {}
-
   expect(Bar.handleParams).toEqual(callback);
   for (const item of [null, undefined, 1, {}, [], true, '', 'foo']) {
     try {

@@ -7,6 +7,12 @@ export interface BaseContext<P = {}, C = {}> extends Hooks<P, C> {
 
 export class Step<P = {}, C = {}> extends BaseStep<P, C & BaseContext<P, C>> {
   static title?: string;
+  static meta?: object;
+  static level?: any[];
+  static salesforce?: any[];
+  static google?: string[];
+  static rc?: any[];
+  static bt?: any[];
   static handleParams?(handleParams: any[]): any[];
   static examples?: any[];
   static context?: any;

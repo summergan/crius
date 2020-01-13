@@ -15,6 +15,13 @@ export {
   plugins,
   Plugins,
   params,
+  meta,
+  p0,
+  p1,
+  salesforce,
+  google,
+  rc,
+  bt,
 } from './decorators';
 
 export {
