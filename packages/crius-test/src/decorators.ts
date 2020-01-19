@@ -4,6 +4,7 @@ import { isCriusFlow } from 'crius-is';
 import { Step, BaseContext } from "./step";
 import { parserString, compileString } from "./utils";
 
+
 function autorun(_test: Function) {
   return function(_target: Object) {
     const target = (isCriusFlow(_target) ? () => target : _target) as typeof Step;
@@ -21,12 +22,12 @@ function autorun(_test: Function) {
       //   title = JSON.stringify({title, ...target.meta, level:target.level});
       // }
       let tags: any[] = [];
-      target.salesforce !== null ? tags.push(target.salesforce): tags.push();
-      target.google !== null ? tags.push(target.google): tags.push();
+      typeof target.salesforce !== "undefined" ? tags.push(target.salesforce): tags.push();
+      typeof target.google !== "undefined" ? tags.push(target.google): tags.push();
 
       let brands: any[] = [];
-      target.rc !== null ? brands.push(target.rc): brands.push();
-      target.bt !== null ? brands.push(target.bt): brands.push();
+      typeof target.rc !== "undefined" ? brands.push(target.rc): brands.push();
+      typeof target.bt !== "undefined" ? brands.push(target.bt): brands.push();
       let metadata: object;
       if(tags.length > 0) {
         metadata = {tags}
@@ -123,7 +124,7 @@ function p1(target: object){
 
 function salesforce(params?: object){
   return function(target: object){
-    const tag:any[] = typeof params === 'object'? ["salesforce", params]:["salesforce"];
+    const tag:any[] = typeof params !== "undefined"? ["salesforce", params]:["salesforce"];
     (target as typeof Step).salesforce = tag;
   }
 }
