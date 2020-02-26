@@ -14,4 +14,6 @@ export {
   plugins,
   Plugins,
   params,
+  compileString,
+  BaseContext,
 } from './src';
